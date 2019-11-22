@@ -68,20 +68,30 @@ public class FracCalc {
     // TODO: Fill in the space below with any helper methods that you think you will need
     
     public static String parse(String fraction) {
-    	String whole = "";
+    	boolean wholeBool = false;
+    	boolean fracBool = false;
+    	String whole = "0";
     	int firstEnd = 0;
-    	String numerator = "";
+    	String numerator = "0";
     	int secondEnd = 0;
-    	String denominator = "";
+    	String denominator = "1";
     	for (int i = 0; i < fraction.length(); i++) {
     		if (fraction.charAt(i) == '_') {
+    			// Looks for underscore and determines whole number
     			whole = fraction.substring(0, i);
     			firstEnd = i + 1;
+    			wholeBool = true;
     		} else if (fraction.charAt(i) == '/') {
+    			// Looks for forward slash and determines numerator and denominator
     			numerator = fraction.substring(firstEnd, i);
     			secondEnd = i + 1;
     			denominator = fraction.substring(secondEnd, fraction.length());
+    			fracBool = true;
     		}
+    	}
+    	// Determines if the input is just a whole number or a fraction
+    	if (wholeBool == false && fracBool == false) {
+    		whole = fraction;
     	}
     	String values = "whole:" + whole + " numerator:" + numerator + " denominator:" + denominator;
     	return values;

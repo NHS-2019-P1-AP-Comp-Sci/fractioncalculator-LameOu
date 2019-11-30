@@ -60,9 +60,10 @@ public class FracCalc {
     			secondFrac = input.substring(secondEnd, input.length());
     		}
     	}
-    	String firstFracParse = parse(firstFrac);
-    	String secondFracParse = parse(secondFrac);
-    	return secondFracParse;
+    	String firstAnswer = parse(firstFrac);
+    	String secondAnswer = parse(secondFrac);
+    	String answer = solve(firstAnswer, secondAnswer, operator);
+    	return answer;
     }
     	
     // TODO: Fill in the space below with any helper methods that you think you will need
@@ -70,6 +71,9 @@ public class FracCalc {
     public static String parse(String fraction) {
     	boolean wholeBool = false;
     	boolean fracBool = false;
+    	boolean negative = false;
+    	// This boolean determines if the whole is negative and whether
+    	// to distribute that negative into the numerator
     	String whole = "0";
     	int firstEnd = 0;
     	String numerator = "0";
@@ -81,9 +85,15 @@ public class FracCalc {
     			whole = fraction.substring(0, i);
     			firstEnd = i + 1;
     			wholeBool = true;
+    			if (whole.charAt(0) == '-' ) {
+    				negative = true;
+    			}
     		} else if (fraction.charAt(i) == '/') {
     			// Looks for forward slash and determines numerator and denominator
     			numerator = fraction.substring(firstEnd, i);
+    			if (negative == true) {
+    				numerator = "-" + numerator;
+    			}
     			secondEnd = i + 1;
     			denominator = fraction.substring(secondEnd, fraction.length());
     			fracBool = true;
@@ -93,8 +103,45 @@ public class FracCalc {
     	if (wholeBool == false && fracBool == false) {
     		whole = fraction;
     	}
-    	String values = "whole:" + whole + " numerator:" + numerator + " denominator:" + denominator;
-    	return values;
+    	String newFrac = "";
+    	int newNumerator = Integer.parseInt(whole) * Integer.parseInt(denominator) + 
+    					   Integer.parseInt(numerator);
+    	int newDenominator = Integer.parseInt(denominator);
+    	newFrac = newNumerator + "/" + newDenominator;
+    	return newFrac;
     }
-	
+    
+    public static String solve(String a, String b, String operator) {
+    	String newFrac = "";
+    	int firstNum = 0;
+    	int firstDen = 0;
+    	int secondNum = 0;
+    	int secondDen = 0;
+    	for (int i = 0; i < a.length(); i++) {
+    		if (a.charAt(i) == '/') {
+    			firstNum = Integer.parseInt(a.substring(0, i));
+    			firstDen = Integer.parseInt(a.substring(i + 1, a.length()));
+    		}
+    	}
+    	for (int i = 0; i < b.length(); i++) {
+    		if (b.charAt(i) == '/') {
+    			secondNum = Integer.parseInt(b.substring(0, i));
+    			secondDen = Integer.parseInt(b.substring(i + 1, b.length()));
+    		}
+    	}
+    	int numerator = 0;
+    	int denominator = firstDen * secondDen;
+    	if (operator.equals("+")) {
+    		numerator = firstNum * secondDen + secondNum * firstDen;
+    	} else if (operator.equals("-")) {
+    		numerator = firstNum * secondDen - secondNum * firstDen;
+    	} else if (operator.equals("*")) {
+    		numerator = firstNum * secondNum;
+    	} else if (operator.equals("/")) {
+    		denominator = firstDen * secondNum;
+    		numerator = firstNum * secondDen;
+    	}
+    	newFrac = numerator + "/" + denominator;
+    	return newFrac;
+    }
 }

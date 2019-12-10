@@ -63,6 +63,7 @@ public class FracCalc {
     	String firstAnswer = parse(firstFrac);
     	String secondAnswer = parse(secondFrac);
     	String answer = solve(firstAnswer, secondAnswer, operator);
+    	answer = reduce(answer);
     	return answer;
     }
     	
@@ -142,6 +143,61 @@ public class FracCalc {
     		numerator = firstNum * secondDen;
     	}
     	newFrac = numerator + "/" + denominator;
+    	return newFrac;
+    }
+    
+    public static String reduce(String frac) {
+    	String newFrac = "";
+    	int whole = 0;
+    	int num = 0;
+    	int den = 1;
+    	for (int i = 0; i < frac.length(); i++) {
+    		if (frac.charAt(i) == '/') {
+    			num = Integer.parseInt(frac.substring(0, i));
+    			den = Integer.parseInt(frac.substring(i + 1, frac.length()));
+    		}
+    	}
+    	whole = num / den;
+    	num = num % den;
+    	for (int i = 0; i < Math.abs(den); i++) {
+		  	for (int j = 2; j <= Math.abs(num); j++) {
+				if (num % j == 0 && den % j == 0) {
+					num = num / j;
+					den = den / j;
+				}
+			}
+    	}
+	  	if (whole < 0 && num < 0) {
+	  		//Checks if negative sign is distributed properly
+	  		num = Math.abs(num);
+	  	}
+	  	if (whole < 0 && den < 0) {
+	  		//Checks if negative sign is distributed properly
+	  		den = Math.abs(den);
+	  	}
+	  	if (num < 0 && den < 0) {
+	  		//Checks if both numerator and denominator are both negative
+	  		num = Math.abs(num);
+	  		den = Math.abs(den);
+	  	}
+	  	if (num > 0 && den < 0) {
+	  		//Checks if numerator is positive but denominator is negative
+	  		num *= -1;
+	  		den = Math.abs(den);
+	  	}
+    	if (whole == 0 && num != 0) {
+    		// Checks if fraction is not mixed number
+    		newFrac = num + "/" + den;
+    	} else if (num == 0 && whole != 0) {
+    		// Checks if fraction is whole number
+    		newFrac = Integer.toString(whole);
+    	} else if (whole == 0 && num == 0) {
+    		//Checks if fraction is 0
+    		newFrac = Integer.toString(0);
+    	} else {
+    		//Checks if fraction is mixed number
+    		newFrac = whole + "_" + num + "/" + den;
+    	}
     	return newFrac;
     }
 }
